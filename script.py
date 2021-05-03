@@ -24,7 +24,9 @@ def plot_stock(data,symbol):
                         name=symbol)])
 
     fig.update_xaxes(type='category')
+    fig.update_layout(autosize=True, rangemode='tozero')
     fig.update_layout(autosize=True)
+    fig.update_yaxes(rangemode="tozero")
     st.plotly_chart(fig, use_container_width=True)
     return
 
@@ -34,8 +36,9 @@ def prophetForecast(data, period=30):
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
 
     m = Prophet()
+    m.add_seasonality('self_define_cycle',period=252,fourier_order=8,mode='additive')
     m.fit(df_train)
-    future = m.make_future_dataframe(periods=period)
+    future = m.make_future_dataframe(periods=period,freq='D')
     forecast = m.predict(future)
 
     return forecast, m
@@ -50,7 +53,7 @@ if typeDash == 'Forecast':
     st.title('Stock Forecast Dashboard')
 
     symbol = st.sidebar.text_input("Enter Stock Ticker here", 'AAPL', max_chars=5, type='default')
-    start_dt = st.sidebar.date_input('Select start date:', value = today - datetime.timedelta(days=100), max_value=today)
+    start_dt = st.sidebar.date_input('Select start date:', value = today - datetime.timedelta(days=365), max_value= today -datetime.timedelta(days=365))
     end_dt = st.sidebar.date_input('Select end date:',max_value=today)
     forecast_period = st.sidebar.text_input('Enter number of days to forecast:', value=30, max_chars=3)
 
@@ -64,6 +67,8 @@ if typeDash == 'Forecast':
 
         st.subheader(f'FB Prohet forecasting chart: {symbol} for {forecast_period} days')
         fig1 = plot_plotly(m, forecast)
+        fig1.update_yaxes(title_text='Share Price ($)',rangemode="tozero")
+
         st.plotly_chart(fig1)
 
 if typeDash =='Correlation':
