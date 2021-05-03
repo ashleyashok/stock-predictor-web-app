@@ -42,7 +42,7 @@ def prophetForecast(data, period=30):
 
 today = datetime.date.today()
 
-st.sidebar.write('Select Option')
+st.sidebar.text('Select Option')
 typeDash = st.sidebar.selectbox('Type of Dashboard:',('Forecast', 'Correlation'))
 
 
