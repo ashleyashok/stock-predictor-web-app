@@ -4,3 +4,4 @@ plotly==4.14.3
 requests==2.24.0
 streamlit==0.65.2
 pystan
+pandas_datareader

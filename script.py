@@ -4,12 +4,15 @@ import yfinance as yf
 from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
 from plotly import graph_objs as go
+from pandas_datareader import data as pdr
+
 import requests
 
 # get stock data
 @st.cache
 def getStockData(ticker, start, end):
-    df = yf.download(ticker, start, end)
+    # df = yf.download(ticker, start, end)
+    df = pdr.get_data_yahoo(ticker, start, end)
     df.reset_index(inplace=True)
     df['Date'] = df['Date'].dt.strftime('%Y-%m-%d')
     return df
